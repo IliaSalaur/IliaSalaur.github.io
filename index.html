@@ -1,0 +1,57 @@
+<html>
+
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+    <div id="bodywrap">
+        <div class = "wrapper">
+            <div id="trackidwrap">
+                <select id="track-id" class="selectstage" name="action" onchange="stageChange()">
+                    <option value="none" selected disabled hidden>Stage</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+                <button id="con" onclick="connectToSerial()">Connect</button>
+            </div>            
+            <div class="editwrap" id="editwrapper">
+                <div class="editpanel">
+                    <div id="editform">
+                        <div id="seqwrap">
+                            <div id = "seq-e0" class="seqedit">
+                                <select class="selectaction" name="action">
+                                    <option value="none" selected disabled hidden>Action</option>
+                                    <option value="p">Play</option>
+                                    <option value="s">Stop</option>
+                                    <option value="d">Delay</option>
+                                    <option value="f">Function</option>
+                                </select>
+                                <input type="text" class="args" name="args"></input>
+                                <button class="del-element">--</button>
+                            </div>
+                        </div>
+                        <input type="submit" value="Save" id="save" onclick="saveSequence()">
+                        <input type="submit" value="Delete" id="delete" onclick="deleteSequence()">
+                    </div>
+                </div>
+                <div class="addwrap">
+                    <div id="add" onclick="addAction()">+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./webscript.js"></script>
+</body>
+
+</html>

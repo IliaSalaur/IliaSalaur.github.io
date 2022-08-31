@@ -1,0 +1,164 @@
+body{
+
+    background-color: #008184;
+    font-family: Andale Mono, monospace;
+    padding-bottom: 300px;
+    font-weight: 700;
+    font-size: xx-large;
+    margin: auto;
+    width: 100%;
+    display: grid;
+}
+
+#bodywrap{
+    display: flex;
+    justify-self: center;
+}
+
+.headerwrapper{
+    background-color: #004042;
+    padding: 1px;    
+    margin: 0px;
+    margin-bottom: 10px;
+    font-size: x-large;
+    font-weight: 550;
+}
+
+.wrapper { 
+    display: grid; 
+    grid-template-columns: 1fr 6fr; 
+    grid-template-rows: 1fr; 
+    grid-column-gap: 3%;
+    grid-row-gap: 0px; 
+    margin:1%;
+    user-select: none;
+    width: auto;
+    height: min-content;
+}
+
+select.selectstage{
+    width: 100% !important;
+}
+
+#editwrapper, #trackidwrap{
+    display: block;    
+    background-color: #006163;
+    min-height: 35%;
+    margin: 2px;
+    margin-top: 10px;
+    margin-bottom: 10px;    
+    border-radius: 10px;
+    width: max-content;
+}
+
+#trackidwrap{
+    min-height: 35%;
+    padding: 10px;
+    width: min-content;
+}
+
+.editwrap{
+    transition: all .3s linear;
+}
+
+.make-visible
+{
+    display: block !important;
+}
+
+#editform{
+    min-height: 35%;
+    padding: 10px;
+    display: block;
+}
+
+
+
+#seqwrap{
+    display: block;
+}
+
+.seqedit{
+    padding:20px;
+    padding-bottom: 0px;
+    padding-top: 0px;    
+}
+select.selectaction{
+    width:30%;
+}
+
+select, option, .args{
+    color:white;
+    font-weight: 700;
+    font-size: large;
+    background-color: #004042;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.args{
+    width: 50%;
+}
+
+#save, #delete, .del-element, #con{
+    width:30%;
+    color:white;
+    font-weight: 700;
+    font-size: large;
+    background-color: #004042;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: none;
+}
+
+button.del-element{
+    width: 9%;
+    letter-spacing: -1px;
+}
+
+#con{
+    margin-top: 12%;
+    width: fit-content;
+}
+
+input:focus{
+    outline-color: #004042;
+}
+
+/* .addwrap{
+    display: flex;
+    justify-content: right;
+    position:absolute;
+    right: 10px;
+    bottom:0;
+    width:100%;
+    height:auto;
+} */
+
+#add {
+    user-select: none;
+    position: fixed;
+    right:0;
+    bottom:0;
+    display:flex;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    padding: 20px;
+    line-height: 15px;
+    border-radius: 100%;
+    font-weight: 700;
+    font-size: xxx-large;
+    transition-duration: 0.2s;
+    background-color: darkslateblue;
+    color: white;
+    margin: 10px;
+    text-align: center;
+}
+
+#add:active {
+    background-color: #3e8e41;
+    box-shadow: 0 1px #666;
+    transform: translateY(4px);
+  }
+
