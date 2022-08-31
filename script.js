@@ -35,7 +35,7 @@ var Mapper = /** @class */ (function () {
         var actions = [];
         str = str.substring(str.indexOf("~"));
         while (str != "~`" && str.length > 2) {
-            actions.push(this.parseAction(str)); //1h~pkek~tlol~`
+            actions.push(this.parseAction(str));
             str = str.substring(1);
             str = str.substring(str.indexOf("~"));
         }
@@ -50,7 +50,6 @@ var Mapper = /** @class */ (function () {
             str += "~";
             str += actions[i].action;
             str += actions[i].args;
-            //console.log("!!!!!", actions);
         }
         str += (noNewLine === true) ? "~" : "~`";
         return str;
@@ -63,10 +62,6 @@ var Mapper = /** @class */ (function () {
     };
     return Mapper;
 }());
-// const ma:Macro = Mapper.parseMacro("1h~tlolkeke~pqq~rqq~a~`");
-// //console.log(acts);
-// var myStr:string = Mapper.preprocessString(Mapper.serializeActions(acts));
-// console.log(Mapper.serializeMacro(ma));
 
 let idCount = 1, invalidateCount = 0;
 document.addEventListener('DOMContentLoaded', function () {
@@ -118,27 +113,12 @@ async function saveSequence(){
     sequenceStr += Mapper.serializeSequence(sequence);
     sequenceStr += "\r\n";
     writeToSerial(sequenceStr);
-    //console.log(sequenceStr);
-    // ipcRenderer.invoke('save-sequence', sequenceStr).then(answer => {
-    //     //console.log(answer);
-    //     alert("Saved");
-    // }).catch(e=>{alert("Can't write to this port ");});
 }
 
 function stageChange(){
     deleteSequence();
     const trackid = document.querySelector('#track-id').value;
     writeToSerial(`g${trackid}`);
-    // ipcRenderer.invoke('get-sequence', trackid).then((answer => {
-    //     //console.log(answer);
-    //     buildSequenceDOM(answer);
-    // }))
-    // .catch(e => {
-    //     if(e){
-    //         alert("Port not selected");
-    //         //console.log(e);
-    //     }
-    // });
 }
 
 function buildSequenceDOM(sequenceStr){
@@ -147,7 +127,6 @@ function buildSequenceDOM(sequenceStr){
     let sequenceEdit = document.querySelector('#seq-e0');
     const seqWrap = document.querySelector('#seqwrap');
     const actDefs = seqWrap.children;
-    //console.log(sequence);
 
     if(sequence.actions.length > 0){
         sequenceEdit.querySelector('select').value = sequence.actions[0].action;
@@ -179,55 +158,46 @@ function writeToSerial(data){
 }
 
 async function connectToSerial(){
-    port = await navigator.serial.requestPort();
-    await port.open({ baudRate: 76800 });
+    if("serial" in navigator){
+        port = await navigator.serial.requestPort();
+        await port.open({ baudRate: 76800 });
 
+        const textEncoder = new TextEncoderStream();
+        writer = textEncoder.writable.getWriter();
+        const writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
 
-    const textEncoder = new TextEncoderStream();
-    writer = textEncoder.writable.getWriter();
-    const writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
+        const textDecoder = new TextDecoderStream();
+        const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
+        const reader = textDecoder.readable.getReader();
 
-    const textDecoder = new TextDecoderStream();
-    const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
-    const reader = textDecoder.readable.getReader();
+        await port.setSignals({ dataTerminalReady: true });
+        await port.setSignals({ requestToSend: true });
 
-    await port.setSignals({ dataTerminalReady: true });
-    await port.setSignals({ requestToSend: true });
-
-    while (port.readable) {
-        try {
-            sequenceStr = "";
-        while (true) {
-            const { value, done } = await reader.read();
-            if (value) {
-            sequenceStr += value;
-            console.log("!!!!!!", value);
-            setTimeout(()=>{sequenceStr = ""}, 1000);
-            }
-            if (done) {
-            // Allow the serial port to be closed later.
-                console.log("[readLoop] DONE", done);
-                reader.releaseLock();
-                break;
-            }
-            // value is a string.
-            if(validateSequenceStr(sequenceStr)){
-                buildSequenceDOM(sequenceStr);
-                console.log(sequenceStr);
+        while (port.readable) {
+            try {
                 sequenceStr = "";
-                invalidateCount = 0;
+            while (true) {
+                const { value, done } = await reader.read();
+                if (value) {
+                sequenceStr += value;
+                setTimeout(()=>{sequenceStr = ""}, 1000);
+                }
+                if (done) {
+                    reader.releaseLock();
+                    break;
+                }
+                if(validateSequenceStr(sequenceStr)){
+                    buildSequenceDOM(sequenceStr);
+                    sequenceStr = "";
+                    invalidateCount = 0;
+                }
             }
-            
-            // else if(++invalidateCount > 10){
-            //     await port.setSignals({ requestToSend: true });
-            //     setTimeout(async()=>{await port.setSignals({ requestToSend: false });}, 1000);
-            //     invalidateCount = 0;
-            //     console.log("RESET");
-            // }
-        }
-        } catch (error) {
-        //! TODO: Handle non-fatal read error.
-        console.log("[readLoop] ERROR", error);
+            } catch (error) {
+            }
         }
     }
+    else {
+        alert("Your browser doesn't support Web Serial API");
+    }
+    
 }
